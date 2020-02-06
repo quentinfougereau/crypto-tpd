@@ -16,28 +16,42 @@ public class RSA_raw {
     
     static void fabrique() {           // Fabrique d'une paire de clefs RSA (A MODIFIER)
         n = new BigInteger("196520034100071057065009920573", 10);
-        e = new BigInteger("7", 10);
+        e = new BigInteger("65537", 10); // RFC 4871 : Public exponent e = 65537
         d = new BigInteger("56148581171448620129544540223", 10);
+
         p = Alea.getProbablyPrimeNumber(1024);
         q = Alea.getProbablyPrimeNumber(1024);
         n = p.multiply(q);
-        w = p.subtract(BigInteger.valueOf(1));
-        w = w.multiply(q.subtract(BigInteger.valueOf(1)));
-        System.out.println("n = " + n);
-        System.out.println("w = " + w);
+        w = p.subtract(BigInteger.ONE);
+        w = w.multiply(q.subtract(BigInteger.ONE));
 
-        Random alea = new Random();
-
-
-
-        /*
-        BigInteger d = new BigInteger(w.subtract(BigInteger.valueOf(1)).bitLength(), alea);
-        if (d.equals(BigInteger.valueOf(0))) {
-            d.add(BigInteger.valueOf(1));
+        while(!e.gcd(w).equals(BigInteger.ONE)) {
+            p = Alea.getProbablyPrimeNumber(1024);
+            q = Alea.getProbablyPrimeNumber(1024);
+            n = p.multiply(q);
+            w = p.subtract(BigInteger.ONE);
+            w = w.multiply(q.subtract(BigInteger.ONE));
         }
-        d.gcd(w);
+
+        d = e.modInverse(w);
+
+        // Calcul de d
+        /*
+        Random alea = new Random();
+        d = new BigInteger(w.bitLength(), alea);
+        while (d.compareTo(w.subtract(BigInteger.ONE)) == 1
+                || !d.gcd(w).equals(BigInteger.ONE)) {
+            d = new BigInteger(w.bitLength(), alea);
+        }
         */
 
+        // Calcul de e
+        /*
+        e = d.modInverse(w);
+        while (e.compareTo(w.subtract(BigInteger.ONE)) == 1) {
+            e = d.modInverse(w);
+        }
+         */
 
     }
 
